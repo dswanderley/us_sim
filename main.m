@@ -88,7 +88,7 @@ range_arr = linspace(0, MAX_RANGE, R_SAMPLES);
 
 n_sensors = sensor_shape(2);
 % 3D Image, where each layer is a plan
-M = zeros(R_SAMPLES, sensor_shape(2), sensor_shape(1));
+V = zeros(R_SAMPLES, sensor_shape(2), sensor_shape(1));
 for c = 1:length(idx_list)
     
     idx = idx_list(c);
@@ -98,21 +98,19 @@ for c = 1:length(idx_list)
     depth = zeros(1, R_SAMPLES); 
     depth(index) = 1;
     
-    M(:, mm, nn) = depth;
+    V(:, mm, nn) = depth;
 end
 
-
-figure, imshow(M(:, :, 7))
-
-
-
-
-
-
-
-
-
-
+% Slice for 3D vizualization 
+[xx, yy, zz] = meshgrid(1:sensor_shape(2) ,1:R_SAMPLES, 1:sensor_shape(1));
+xslice = 1:sensor_shape(2); 
+yslice = 1:R_SAMPLES;
+zslice = 1:sensor_shape(1);
+figure,
+slice(xx,yy,zz, V,xslice,yslice, zslice)
+colormap(autumn(5))
+axis equal
+xlabel('x'); ylabel('y'); zlabel('z');
 
 
 
