@@ -15,11 +15,6 @@ end
 scale = 0.05;
 offsets = [1, 0, 0];
 obj.v = setobjoffset(obj.v, offsets, scale);
-
-figure,
-trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
-axis equal
-xlabel('x'); ylabel('y'); zlabel('z');
 % Hold Trisurf
 
 %     z
@@ -33,7 +28,10 @@ sensor_shape = [10, 4];
 sensor = rectsensor(sensor_shape, sensor_shape/10,  center);
 % sensor = sortrows(sensor);
 
-figure,
+figure, % PLOT REAL WORLD
+trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
+axis equal
+hold on
 plot3(sensor(:,1),sensor(:,2),sensor(:,3),'.')
 xlabel('x'); ylabel('y'); zlabel('z');
 
