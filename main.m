@@ -1,32 +1,31 @@
 close all; clear; clc;
 
 obj_str = 'torus-188';
+% obj_str = 'two-blocks';
 
 if  exist([obj_str ,'.mat'],'file')
-    x_min = min(obj.v(:,1));
-    x_offset = 5;
-    obj.v(:,1) = obj.v(:,1) - x_min + x_offset;
-    obj = load('torus.mat');
+    obj = load([obj_str, '.mat']);
 else
     obj = readObj([obj_str, '.obj']);
-    save('obj.mat','-struct', 'obj');
+    
+    %x_min = min(obj.v(:,1));
+    %x_offset = 5;
+    %obj.v(:,1) = obj.v(:,1) - x_min + x_offset;
+    
+    save([obj_str, '.mat'],'-struct', 'obj');
 end
 
 scale = 0.05;
 offsets = [1, 0, 0];
 obj.v = setobjoffset(obj.v, offsets, scale);
-% Hold Trisurf
-
 %     z
 %      |__ y
 %   x /
-
 r_max = 2*10^-3; N_r = 10; N_ang = 36;
 center = [0, 0.5, 0.75];
 % sensor = circlesensor(r_max, N_r, N_ang, center);
 sensor_shape = [10, 4];
-sensor = rectsensor(sensor_shape, sensor_shape/10,  center);
-% sensor = sortrows(sensor);
+sensor = rectsensor(sensor_shape, sensor_shape/10,  center); % sensor = sortrows(sensor);
 
 figure, % PLOT REAL WORLD
 trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
@@ -34,6 +33,7 @@ axis equal
 hold on
 plot3(sensor(:,1),sensor(:,2),sensor(:,3),'.')
 xlabel('x'); ylabel('y'); zlabel('z');
+%hold off
 
 %%% RAYS DISTANCE %%%
 n_rays = size(sensor,1);
@@ -52,14 +52,21 @@ for k = 1:n_rays
     rays_voxel_id{k} = face_int_idx;
 end
 
-rays_distance{1} = [];
-rays_distance{10} = [];
 idx_list = find(~cellfun(@isempty,rays_distance));
 
 rays_distance = cell2mat(rays_distance(:));
 rays_intercept = cell2mat(rays_intercept(:));
 rays_voxel_id = cell2mat(rays_voxel_id(:));
+% PLOT RAYS
+if (~isempty(rays_intercept))
+    p1 = sensor(idx_list,:);
+    p2 = rays_intercept;
+    plot3([p1(:,1),p2(:,1)]',[p1(:,2),p2(:,2)]',[p1(:,3),p2(:,3)]');
+end
+hold off
 
+
+% PLOT DISTANCES
 figure,
 stem3(sensor(idx_list,2), sensor(idx_list,3), rays_distance)
 axis equal
