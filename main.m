@@ -108,12 +108,21 @@ yslice = 1:R_SAMPLES;
 zslice = 1:sensor_shape(1);
 figure,
 slice(xx,yy,zz, V,xslice,yslice, zslice)
-colormap(autumn(5))
+colormap winter
 axis equal
 xlabel('x'); ylabel('y'); zlabel('z');
 
+% 3D Volume vizualization
+xdata = [0,sensor_shape(2)]; 
+ydata = [0,R_SAMPLES];
+zdata = [0,sensor_shape(1)];
 
-
+figure, 
+vol3d('cdata', V, 'xdata', xdata, 'ydata', ydata, 'zdata', zdata);
+colormap winter
+%axis equal off
+%set(gcf, 'color', 'w');
+%xlabel('x'); ylabel('y'); zlabel('z');
 
 
 
