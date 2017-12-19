@@ -7,11 +7,6 @@ if  exist([obj_str ,'.mat'],'file')
     obj = load([obj_str, '.mat']);
 else
     obj = readObj([obj_str, '.obj']);
-    
-    %x_min = min(obj.v(:,1));
-    %x_offset = 5;
-    %obj.v(:,1) = obj.v(:,1) - x_min + x_offset;
-    
     save([obj_str, '.mat'],'-struct', 'obj');
 end
 
@@ -41,7 +36,6 @@ rays_distance{n_rays} = [];
 rays_intercept{n_rays} = [];
 rays_voxel_id{n_rays} = [];
 for k = 1:n_rays
-    
     p_sensor = sensor(k,:);             % Transducer point
     p_focal = p_sensor - [ 1, 0, 0];    % Focal point
     line = [p_sensor; p_focal];
@@ -53,10 +47,10 @@ for k = 1:n_rays
 end
 
 idx_list = find(~cellfun(@isempty,rays_distance));
-
 rays_distance = cell2mat(rays_distance(:));
 rays_intercept = cell2mat(rays_intercept(:));
 rays_voxel_id = cell2mat(rays_voxel_id(:));
+
 % PLOT RAYS
 if (~isempty(rays_intercept))
     p1 = sensor(idx_list,:);
@@ -64,7 +58,6 @@ if (~isempty(rays_intercept))
     plot3([p1(:,1),p2(:,1)]',[p1(:,2),p2(:,2)]',[p1(:,3),p2(:,3)]');
 end
 hold off
-
 
 % PLOT DISTANCES
 figure,
@@ -85,5 +78,45 @@ min_idx = min_idx(1);
 
 disp(['dist min: ', num2str(min_ray)])
 disp(['interception: ', num2str(rays_intercept(min_idx))])
+
+
+%%% PLANE %%% 
+
+MAX_RANGE = 3; % m
+R_SAMPLES = 100;
+range_arr = linspace(0, MAX_RANGE, R_SAMPLES);
+
+n_sensors = sensor_shape(2);
+% 3D Image, where each layer is a plan
+M = zeros(R_SAMPLES, sensor_shape(2), sensor_shape(1));
+for c = 1:length(idx_list)
+    
+    idx = idx_list(c);
+    [nn, mm] = ind2sub(sensor_shape,idx);
+    [val, index] = min(abs(range_arr - rays_distance(c)));
+    
+    depth = zeros(1, R_SAMPLES); 
+    depth(index) = 1;
+    
+    M(:, mm, nn) = depth;
+end
+
+
+figure, imshow(M(:, :, 7))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
