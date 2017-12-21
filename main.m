@@ -81,7 +81,6 @@ disp(['interception: ', num2str(rays_intercept(min_idx))])
 
 
 %%% PLANE %%% 
-
 MAX_RANGE = 3; % m
 R_SAMPLES = 100;
 range_arr = linspace(0, MAX_RANGE, R_SAMPLES);
@@ -100,7 +99,6 @@ for c = 1:length(idx_list)
     
     V(:, mm, nn) = depth;
 end
-
 % Slice for 3D vizualization 
 [xx, yy, zz] = meshgrid(1:sensor_shape(2) ,1:R_SAMPLES, 1:sensor_shape(1));
 xslice = 1:sensor_shape(2); 
