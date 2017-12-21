@@ -4,8 +4,8 @@ function [ rec ] = rectsensor(dim, max_dim,  center)
 
 %close all; clear;clc;
 c = center;%[0, 1, 1];
-a = [0, 1, 0];
-b = [0, 0, 1];
+u = [0, 1, 0];
+v = [0, 0, 1];
 
 max_height = max_dim(1);% max_height = 0.7;
 max_width = max_dim(2);% max_width = 0.3;
@@ -17,9 +17,9 @@ cols = linspace(-max_width, max_width, W);
 
 [X,Y] = meshgrid(cols, rows);
 
-x = c(1) + (a(1) * X) + (b(1) * Y);
-y = c(2) + (a(2) * X) + (b(2) * Y);
-z = c(3) + (a(3) * X) + (b(3) * Y);
+x = c(1) + (u(1) * X) + (v(1) * Y);
+y = c(2) + (u(2) * X) + (v(2) * Y);
+z = c(3) + (u(3) * X) + (v(3) * Y);
 
 rec = [ reshape(x,numel(x),1), ...
         reshape(y,numel(y),1), ...
