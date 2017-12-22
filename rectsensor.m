@@ -1,11 +1,11 @@
-function [ rec ] = rectsensor(dim, max_dim,  center)
+function [ rec ] = rectsensor(dim, max_dim,  center, u, v)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
 %close all; clear;clc;
 c = center;%[0, 1, 1];
-u = [0, 1, 0];
-v = [0, 0, 1];
+% u = [0, 1, 0];
+% v = [0, 0, 1];
 
 max_height = max_dim(1);% max_height = 0.7;
 max_width = max_dim(2);% max_width = 0.3;

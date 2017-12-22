@@ -18,15 +18,23 @@ obj.v = setobjoffset(obj.v, offsets, scale);
 %   x /
 r_max = 2*10^-3; N_r = 10; N_ang = 36;
 center = [0, 0.5, 0.75];
-% sensor = circlesensor(r_max, N_r, N_ang, center);
-sensor_shape = [10, 4];
-sensor = rectsensor(sensor_shape, sensor_shape/10,  center); % sensor = sortrows(sensor);
+ori = [1,0,0];
+u = [0, 1, 0];
+v = [0, 0, 1];
+% Rectangular sensor
+sensor_shape = [9, 5];
+sensor = rectsensor(sensor_shape, sensor_shape/10,  center, u, v); % sensor = sortrows(sensor);
+
+% GET FOCAL POINTS
+max_angle = 30 * pi /180;
+focus = getfocalpoints(sensor, center, u, v, ori, max_angle);
 
 figure, % PLOT REAL WORLD
 trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
 axis equal
 hold on
 plot3(sensor(:,1),sensor(:,2),sensor(:,3),'.')
+plot3(sensor(23,1),sensor(23,2),sensor(23,3),'*r')
 xlabel('x'); ylabel('y'); zlabel('z');
 %hold off
 
@@ -37,7 +45,7 @@ rays_intercept{n_rays} = [];
 rays_voxel_id{n_rays} = [];
 for k = 1:n_rays
     p_sensor = sensor(k,:);             % Transducer point
-    p_focal = p_sensor - [ 1, 0, 0];    % Focal point
+    p_focal = focus(k,:);    % Focal point
     line = [p_sensor; p_focal];
     
     [ d_min, p_int,  face_int_idx ] = minvoxeldist(obj, line);
@@ -55,7 +63,9 @@ rays_voxel_id = cell2mat(rays_voxel_id(:));
 if (~isempty(rays_intercept))
     p1 = sensor(idx_list,:);
     p2 = rays_intercept;
-    plot3([p1(:,1),p2(:,1)]',[p1(:,2),p2(:,2)]',[p1(:,3),p2(:,3)]');
+    %if (p1(2) == center(2))
+        plot3([p1(:,1),p2(:,1)]',[p1(:,2),p2(:,2)]',[p1(:,3),p2(:,3)]');
+    %end
 end
 hold off
 

@@ -1,5 +1,5 @@
 function [ d_min, p_int,  face_int_idx ] = minvoxeldist( obj, line )
-%UNTITLED6 Summary of this function goes here
+%MINVOXELDIST Summary of this function goes here
 %   Detailed explanation goes here
 
 p_ref = line(1,:);
@@ -9,16 +9,16 @@ p_int = [];
 face_int_idx = [];
 
 for k = 1:length(obj.f.v)
-    
+
+    % Get plane
     plane = obj.v(obj.f.v(k,:),:);
-    %plot3(plane(:,1),plane(:,2),plane(:,3))
-    
+    % Interception point
     p_out = interception(line, plane);
     
     if ~isempty(p_out)
-        
+        % Get minimal distance
         p_dist = pdist([p_out; p_ref]);
-        
+        % Verify
         if p_dist < d_min
             d_min = p_dist;
             p_int = p_out;

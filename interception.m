@@ -1,5 +1,5 @@
 function [ p_out ] = interception(line, plane)
-%UNTITLED Summary of this function goes here
+%INTERCEPTION Summary of this function goes here
 %   Detailed explanation goes here
 
 p_a = line(1,:);
@@ -10,6 +10,7 @@ p_dif = p_a - p_b;
 p_0 = plane(1,:);
 p_1 = plane(2,:);
 p_2 = plane(3,:);
+
 
 p_out = [];
 
@@ -23,6 +24,11 @@ if det(M) ~= 0
         if p_cross(2) <= max(plane(:,2)) && p_cross(2) >= min(plane(:,2))
             if p_cross(3) <= max(plane(:,3)) && p_cross(3) >= min(plane(:,3))
                 p_out = p_cross;
+                
+                
+if (p_a(2) == 0.5 && p_a(3) == 0.75)
+    disp(p_out);
+end
             end
         end
     end

@@ -1,4 +1,4 @@
-function p_vec = circlesensor(r_max, N_r, N_ang, center)
+function p_vec = circlesensor(r_max, N_r, N_ang, center, u, v)
 %UNTITLED7 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,8 +6,8 @@ function p_vec = circlesensor(r_max, N_r, N_ang, center)
 % r_max=30; N_r=36; N_ang=360;
 
 c = center;%[0, 0, 0];
-a = [0, 1, 0];
-b = [0, 0, 1];
+% u = [0, 1, 0];
+% v = [0, 0, 1];
 
 r_stp = r_max / N_r;
 rr = flip(0 : r_stp : r_max);
@@ -27,9 +27,9 @@ for k = 1:N_r
     r_c = r * cos(th);
     r_s = r * sin(th);
     
-    x = c(1) + (a(1) * r_c) + (b(1) * r_s);
-    y = c(2) + (a(2) * r_c) + (b(2) * r_s);
-    z = c(3) + (a(3) * r_c) + (b(3) * r_s);
+    x = c(1) + (u(1) * r_c) + (v(1) * r_s);
+    y = c(2) + (u(2) * r_c) + (v(2) * r_s);
+    z = c(3) + (u(3) * r_c) + (v(3) * r_s);
     
     p = [x', y', z'];
     
