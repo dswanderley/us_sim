@@ -21,23 +21,24 @@ orientation = [1,0,0];  % Array beams orientation
 u = [0, 1, 0];          % Array plan vector 1
 v = [0, 0, 1];          % Array plan vector 2
 % Rectangular sensor
-sensor_size = [9, 5];   % unit (number of beams)
+sensor_size = [5, 3];   % unit (number of beams)
 array_dim = [90, 160]/10;  % cm
-array_size = [9, 5];    % unit (number of sensors in each direction)
+array_size = [5, 3];    % unit (number of sensors in each direction)
 % Get sensors
 [sensors, centers] = sensorarray(sensor_size, array_dim, array_size, u, v, [0,0,0]);
 
 % GET FOCAL POINTS
 center = centers(:,:,1);
 sensor_base = sensors(:,:,1);
-
-max_angle = 0;  %30 * pi /180;
+% Angle - 0 for collinear
+max_angle = 0;%30 * pi /180;
+% Focus based to be applied in each sensor
 focus_base = getfocalpoints(sensor_base, center, u, v, orientation, max_angle);
-
+% Remove offset from sensor_base 
 sensor_base(:,1) = sensor_base(:,1) - center(1);
 sensor_base(:,2) = sensor_base(:,2) - center(2);
 sensor_base(:,3) = sensor_base(:,3) - center(3);
-
+% Remove offset from focus_base
 focus_base(:,1) = focus_base(:,1) - center(1);
 focus_base(:,2) = focus_base(:,2) - center(2);
 focus_base(:,3) = focus_base(:,3) - center(3);
@@ -49,21 +50,26 @@ focus(:,3,:) = focus(:,3,:) + centers(:,3,:);
 
 figure, % PLOT REAL WORLD
 trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
-%xlabel('x'); ylabel('y'); zlabel('z');
-%axis equal
 hold on
-%figure, 
-plot3(sensors(:,1,16), sensors(:,2,16), sensors(:,3,16), '.')
+% plot3(sensors(:,1,16), sensors(:,2,16), sensors(:,3,16), '.')
 xlabel('x'); ylabel('y'); zlabel('z');
-%hold off
 axis equal
 
 %%% RAYS DISTANCE %%%
+array_dists = zeros(1,size(sensors,3));
+array_lines = zeros(2,3,size(sensors,3));
 for k = 1:size(sensors,3)
     sensor = sensors(:,:,k);
     fc = focus(:,:,k);
     [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, obj);
+	array_dists(:,k) = min_dist;
+    array_lines(:,:,k) = [p_sensor; p_voxel]; 
 end
+
+
+
+
+
 hold off
 
 % PLOT DISTANCES
