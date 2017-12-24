@@ -39,29 +39,12 @@ function [valid] = sameside(p1,p2,a,b)
     end
 end
 
-% function inline = isinline(p, a, b)
-%     
-%     v = b - a;
-%     t = (p - a)./v;
-%     
-%     if (t(1) == t(2) && t(2) == t(3))
-%         inline = true;
-%     else
-%         inline = false;
-%     end
-% 
-% end
-
 function [inside] = pointintriangle(p, a, b, c)
 
     if (sameside(p,a,b,c) && sameside(p,b,a,c) && sameside(p,c,a,b))
         inside = true;
     else        
-%         if (isinline(p, a, b) || isinline(p, b, c) || isinline(p, c, a))
-%             inside = true;
-%         else
-            inside = false;
-%         end
+        inside = false;
     end
 end
 

@@ -16,17 +16,16 @@ obj.v = setobjoffset(obj.v, offsets, scale);
 %     z
 %      |__ y
 %   x /
-r_max = 2*10^-3; N_r = 10; N_ang = 36;
 center = [0, 0.5, 0.75];
 ori = [1,0,0];
 u = [0, 1, 0];
 v = [0, 0, 1];
 % Rectangular sensor
 sensor_shape = [9, 5];
-sensor = rectsensor(sensor_shape, sensor_shape/10,  center, u, v); % sensor = sortrows(sensor);
+sensor = rectsensor(sensor_shape, sensor_shape/10,  center, u, v); 
 
 % GET FOCAL POINTS
-max_angle = 30 * pi /180;
+max_angle = 0;%30 * pi /180;
 focus = getfocalpoints(sensor, center, u, v, ori, max_angle);
 
 figure, % PLOT REAL WORLD
@@ -34,7 +33,6 @@ trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0
 axis equal
 hold on
 plot3(sensor(:,1),sensor(:,2),sensor(:,3),'.')
-plot3(sensor(23,1),sensor(23,2),sensor(23,3),'*r')
 xlabel('x'); ylabel('y'); zlabel('z');
 %hold off
 
@@ -109,6 +107,7 @@ for c = 1:length(idx_list)
     
     V(:, mm, nn) = depth;
 end
+
 % Slice for 3D vizualization 
 [xx, yy, zz] = meshgrid(1:sensor_shape(2) ,1:R_SAMPLES, 1:sensor_shape(1));
 xslice = 1:sensor_shape(2); 

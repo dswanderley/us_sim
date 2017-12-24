@@ -21,6 +21,5 @@ else
     focus = repmat(pf, size(sensor,1), 1);
 end
 
-
 end
 

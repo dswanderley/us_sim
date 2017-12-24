@@ -7,10 +7,10 @@ c = center;%[0, 1, 1];
 % u = [0, 1, 0];
 % v = [0, 0, 1];
 
-max_height = max_dim(1);% max_height = 0.7;
-max_width = max_dim(2);% max_width = 0.3;
-H = dim(1);% H = 10;
-W = dim(2);% W = 7;
+max_height = max_dim(1);    % max_height = 0.7;
+max_width = max_dim(2);     % max_width = 0.3;
+H = dim(1);                 % H = 10;
+W = dim(2);                 % W = 7;
 
 rows = linspace(-max_height, max_height, H);
 cols = linspace(-max_width, max_width, W);
