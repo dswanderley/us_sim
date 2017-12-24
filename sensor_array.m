@@ -1,6 +1,6 @@
 clear; close all; clc
 
-ori = [1,0,0]; c  = ori;
+ori = [1,0,0];
 u = [0, 1, 0];
 v = [0, 0, 1];
 
@@ -14,6 +14,7 @@ array_H_max = 90;   % cm
 
 sensor_W_max = array_W_max / array_W;
 sensor_H_max = array_H_max / array_H;
+
 % Define first center
 first_center = [sensor_H_max/2, sensor_W_max/2];
 % Calculate centers references in each direction
@@ -23,19 +24,13 @@ x_centers = linspace(first_center(2), array_W_max - first_center(2), array_W);
 y_centers = repmat(y_centers, 1, array_W);
 x_centers = repmat(x_centers, array_H, 1);
 % Convert to world coords
-X = c(1) + (u(1) * x_centers) + (v(1) * y_centers);
-Y = c(2) + (u(2) * x_centers) + (v(2) * y_centers);
-Z = c(3) + (u(3) * x_centers) + (v(3) * y_centers);
+X = ori(1) + (u(1) * x_centers) + (v(1) * y_centers);
+Y = ori(2) + (u(2) * x_centers) + (v(2) * y_centers);
+Z = ori(3) + (u(3) * x_centers) + (v(3) * y_centers);
 
 
 sensor_H_max_util = (1 - sensor_edge)*sensor_H_max;
 sensor_W_max_util = (1 - sensor_edge)*sensor_W_max;
-
-col0 = sensor_W_max * sensor_edge / 2;
-lin0 = sensor_H_max * sensor_edge / 2;
-
-col1 = col0 + sensor_W_max_util;
-lin1 = lin0 + sensor_H_max_util;
 
 sensor_shape = [9, 9];
 center = [0, 0, 0];
