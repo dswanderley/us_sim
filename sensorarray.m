@@ -46,8 +46,9 @@ sensors(:,1,:) = sensors(:,1,:) + x_z;
 sensors(:,2,:) = sensors(:,2,:) + y_z;
 sensors(:,3,:) = sensors(:,3,:) + z_z;
 % Centers of the sensors
-centers =  [reshape(y_centers, 1, 1, numel(y_centers)), ...
-            reshape(x_centers, 1, 1, numel(x_centers))];
+centers =  [reshape(X, 1, 1, numel(X)), ...
+            reshape(Y, 1, 1, numel(Y)), ...
+            reshape(Z, 1, 1, numel(Z))];
 
 end
 

@@ -15,14 +15,17 @@ p_out = [];
 
 M = [(p_dif)', (p_1 - p_0)', (p_2 - p_0)'];
 % Check if cross the plane
-if det(M) ~= 0
+if abs(det(M)) > 10^-10 % det(M) ~= 0
     t_u_v = M^-1 * (p_a - p_0)';
     % Calculate point of interception
     p_cross = p_a - p_dif * t_u_v(1);
     % Verify if point inside the voxel triangle 
     if (pointintriangle(p_cross, p_0, p_1, p_2))
         p_out = p_cross;
-    end    
+    end 
+    
+else
+    disp('')
 end
 
 end
