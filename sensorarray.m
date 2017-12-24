@@ -1,4 +1,4 @@
-function [sensors, centers] = sensorarray(sensor_size, array_dim, array_size, u, v,ori)
+function [sensors, centers] = sensorarray(sensor_size, array_dim, array_size, u, v,origin)
 %SENSORARRAY Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -26,9 +26,9 @@ x_centers = linspace(first_center(2), array_W_max - first_center(2), array_W);
 y_centers = repmat(y_centers, 1, array_W);
 x_centers = repmat(x_centers, array_H, 1);
 % Convert to world coords
-X = ori(1) + (u(1) * x_centers) + (v(1) * y_centers);
-Y = ori(2) + (u(2) * x_centers) + (v(2) * y_centers);
-Z = ori(3) + (u(3) * x_centers) + (v(3) * y_centers);
+X = origin(1) + (u(1) * x_centers) + (v(1) * y_centers);
+Y = origin(2) + (u(2) * x_centers) + (v(2) * y_centers);
+Z = origin(3) + (u(3) * x_centers) + (v(3) * y_centers);
 
 % Set variables for one sensor on origin
 center = [0, 0, 0];

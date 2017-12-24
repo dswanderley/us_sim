@@ -23,9 +23,6 @@ if abs(det(M)) > 10^-10 % det(M) ~= 0
     if (pointintriangle(p_cross, p_0, p_1, p_2))
         p_out = p_cross;
     end 
-    
-else
-    disp('')
 end
 
 end
