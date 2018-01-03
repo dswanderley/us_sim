@@ -17,6 +17,7 @@ obj.v = setobjoffset(obj.v, offsets, scale);
 %      |__ y
 %   x /
 % Positions of the sensor array
+MAX_DEPTH = 30;         % cm
 orientation = [1,0,0];  % Array beams orientation
 u = [0, 1, 0];          % Array plan vector 1
 v = [0, 0, 1];          % Array plan vector 2
@@ -66,8 +67,8 @@ srect = [srect; srect(1,:)];
 plot3(srect(:,1),srect(:,2),srect(:,3))
 
 %%% RAYS DISTANCE %%%
-array_dists = zeros(1,size(sensors,3));
-array_lines = zeros(2,3,size(sensors,3));
+array_dists{size(sensors,3)} = [];
+array_lines{size(sensors,3)} = [];
 for k = 1:size(sensors,3)
     % Get all point in each sensor, their focus and the sensor center
     sensor = sensors(:,:,k);
@@ -75,35 +76,47 @@ for k = 1:size(sensors,3)
     c = centers(:,:,k);
     % Calculate minimal distance from center
     [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, c, obj);
-	array_dists(:,k) = min_dist;
+	array_dists{k} = min_dist;
     line = [c; p_voxel]; 
-    array_lines(:,:,k) = line;
+    array_lines{k} = line;
     % PLOT MIN BEAM  
     plot3(line(:,1,:), line(:,2,:), line(:,3,:));
+    pause(0.01)
 end
-
 hold off
 
+% Get Positions with at least one interception
+idx_list = find(~cellfun(@isempty,array_dists))';
+rays_distance = cell2mat(array_dists(:));
+[idx_2d_y, idx_2d_x] = ind2sub(array_size, idx_list);
+
 % PLOT DISTANCES
-% % figure,
-% % stem3(sensor(idx_list,2), sensor(idx_list,3), rays_distance)
-% % axis equal
-% % xlabel('x'); ylabel('y'); zlabel('z');
-% 
+figure,
+stem3(idx_2d_x, idx_2d_y, rays_distance)
+xlabel('W'); ylabel('H');
+axis equal
+
+% Depth Image
+M_dist = MAX_DEPTH*ones(array_size);
+M_dist(idx_list) = rays_distance;
+% Show image
+im_sensor = rot90(rot90(M_dist));
+clims = [0 max(rays_distance)];
+figure, 
+surf(im_sensor);
+hold on
+imagesc(im_sensor, clims)
+colorbar
+xlabel('W'); ylabel('H'); zlabel('D');
+
+
+
 % %[idx_l, idx_c] = ind2sub(sensor_shape, idx_list);
 % im_sensor = zeros(sensor_shape);
 % im_sensor(idx_list) = abs(rays_distance/max(rays_distance)-1)+0.5;
 % im_sensor = rot90(rot90(im_sensor));
 % figure, imshow(im_sensor)
-% 
-% %%% MIM DISTANCE %%%
-% min_ray = min(rays_distance);
-% min_idx = find(rays_distance == min_ray);
-% min_idx = min_idx(1);
-% 
-% disp(['dist min: ', num2str(min_ray)])
-% disp(['interception: ', num2str(rays_intercept(min_idx))])
-% 
+
 % 
 % %%% PLANE %%% 
 % MAX_RANGE = 3; % m
