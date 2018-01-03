@@ -21,13 +21,13 @@ orientation = [1,0,0];  % Array beams orientation
 u = [0, 1, 0];          % Array plan vector 1
 v = [0, 0, 1];          % Array plan vector 2
 % Rectangular sensor
-sensor_size = [1,1];%5, 3];   % unit (number of beams)
+sensor_size = [5, 3];   % unit (number of beams)
 sensor_beams = sensor_size(1) * sensor_size(2);
 array_dim = [90, 160]/10;  % cm
 array_size = [3, 5];    % unit (number of sensors in each direction)
 num_sensors = array_size(1) * array_size(2);        % Number of sensors on array
 % Get sensors
-[sensors, centers] = sensorarray(sensor_size, array_dim, array_size, u, v, [0,0,0]);
+[sensors, centers, srect] = sensorarray(sensor_size, array_dim, array_size, u, v, [0,0,0]);
 
 % GET FOCAL POINTS
 array_center = centers(:,:,1);
@@ -55,15 +55,15 @@ figure,
 trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
 hold on
 % PLOT SENSOR CENTERS
-p_x = reshape(centers(:,1,:), 1, num_sensors); 
-p_y = reshape(centers(:,2,:), 1, num_sensors);
-p_z = reshape(centers(:,3,:), 1, num_sensors);
-plot3(p_x, p_y, p_z, '*')
+c_x = reshape(centers(:,1,:), 1, num_sensors)'; 
+c_y = reshape(centers(:,2,:), 1, num_sensors)';
+c_z = reshape(centers(:,3,:), 1, num_sensors)';
+plot3(c_x, c_y, c_z, '*')
 xlabel('x'); ylabel('y'); zlabel('z');
 axis equal
-% PLOT SENSOR BORDERS
-
-
+% PLOT ARRAY BORDERS
+srect = [srect; srect(1,:)];
+plot3(srect(:,1),srect(:,2),srect(:,3))
 
 %%% RAYS DISTANCE %%%
 array_dists = zeros(1,size(sensors,3));
@@ -81,8 +81,6 @@ for k = 1:size(sensors,3)
     % PLOT MIN BEAM  
     plot3(line(:,1,:), line(:,2,:), line(:,3,:));
 end
-
-
 
 hold off
 

@@ -1,4 +1,4 @@
-function [sensors, centers] = sensorarray(sensor_size, array_dim, array_size, u, v,origin)
+function [sensors, centers, srect] = sensorarray(sensor_size, array_dim, array_size, u, v, origin)
 %SENSORARRAY Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -49,6 +49,16 @@ sensors(:,3,:) = sensors(:,3,:) + repmat(z_z, size(sensors(:,3,:),1),1,1);
 centers =  [reshape(X, 1, 1, numel(X)), ...
             reshape(Y, 1, 1, numel(Y)), ...
             reshape(Z, 1, 1, numel(Z))];
+
+recW = [- array_W_max/2; array_W_max/2; array_W_max/2; - array_W_max/2];
+recH = [- array_H_max/2; - array_H_max/2; array_H_max/2; array_H_max/2;];
+
+medium = [mean(centers(:,1,:)), mean(centers(:,2,:)), mean(centers(:,3,:))];
+Xrec = medium(1) + (u(1) * recW) + (v(1) * recH);
+Yrec = medium(2) + (u(2) * recW) + (v(2) * recH);
+Zrec = medium(3) + (u(3) * recW) + (v(3) * recH);
+        
+srect = [Xrec, Yrec, Zrec];
 
 end
 
