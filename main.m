@@ -44,9 +44,9 @@ focus_base(:,2) = focus_base(:,2) - center(2);
 focus_base(:,3) = focus_base(:,3) - center(3);
 
 focus = repmat(focus_base, 1, 1, size(sensors,3));
-focus(:,1,:) = focus(:,1,:) + centers(:,1,:);
-focus(:,2,:) = focus(:,2,:) + centers(:,2,:);
-focus(:,3,:) = focus(:,3,:) + centers(:,3,:);
+focus(:,1,:) = focus(:,1,:) + repmat(centers(:,1,:), size(focus(:,1,:),1), 1, 1);
+focus(:,2,:) = focus(:,2,:) + repmat(centers(:,2,:), size(focus(:,2,:),1), 1, 1);
+focus(:,3,:) = focus(:,3,:) + repmat(centers(:,3,:), size(focus(:,3,:),1), 1, 1);
 
 figure, % PLOT REAL WORLD
 trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)

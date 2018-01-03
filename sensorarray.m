@@ -42,9 +42,9 @@ x_z = reshape(X, 1, 1, numel(X));
 y_z = reshape(Y, 1, 1, numel(Y));
 z_z = reshape(Z, 1, 1, numel(Z));
 % Final sensors (in third dimension)
-sensors(:,1,:) = sensors(:,1,:) + x_z;
-sensors(:,2,:) = sensors(:,2,:) + y_z;
-sensors(:,3,:) = sensors(:,3,:) + z_z;
+sensors(:,1,:) = sensors(:,1,:) + repmat(x_z,size(sensors(:,1,:),1),1,1);
+sensors(:,2,:) = sensors(:,2,:) + repmat(y_z,size(sensors(:,2,:),1),1,1);
+sensors(:,3,:) = sensors(:,3,:) + repmat(z_z,size(sensors(:,3,:),1),1,1);
 % Centers of the sensors
 centers =  [reshape(X, 1, 1, numel(X)), ...
             reshape(Y, 1, 1, numel(Y)), ...
