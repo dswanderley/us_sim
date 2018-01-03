@@ -21,7 +21,7 @@ orientation = [1,0,0];  % Array beams orientation
 u = [0, 1, 0];          % Array plan vector 1
 v = [0, 0, 1];          % Array plan vector 2
 % Rectangular sensor
-sensor_size = [5, 3];   % unit (number of beams)
+sensor_size = [1,1];%5, 3];   % unit (number of beams)
 sensor_beams = sensor_size(1) * sensor_size(2);
 array_dim = [90, 160]/10;  % cm
 array_size = [3, 5];    % unit (number of sensors in each direction)
@@ -33,7 +33,7 @@ num_sensors = array_size(1) * array_size(2);        % Number of sensors on array
 array_center = centers(:,:,1);
 sensor_base = sensors(:,:,1);
 % Angle - 0 for collinear
-max_angle = 0;%30 * pi /180;
+max_angle = 0;  % 30 * pi /180;
 % Focus based to be applied in each sensor
 focus_base = getfocalpoints(sensor_base, array_center, u, v, orientation, max_angle);
 % Remove offset from sensor_base 
@@ -44,13 +44,14 @@ sensor_base(:,3) = sensor_base(:,3) - array_center(3);
 focus_base(:,1) = focus_base(:,1) - array_center(1);
 focus_base(:,2) = focus_base(:,2) - array_center(2);
 focus_base(:,3) = focus_base(:,3) - array_center(3);
-
+% Adjust focus position for each beam
 focus = repmat(focus_base, 1, 1, size(sensors,3));
 focus(:,1,:) = focus(:,1,:) + repmat(centers(:,1,:), size(focus(:,1,:),1), 1, 1);
 focus(:,2,:) = focus(:,2,:) + repmat(centers(:,2,:), size(focus(:,2,:),1), 1, 1);
 focus(:,3,:) = focus(:,3,:) + repmat(centers(:,3,:), size(focus(:,3,:),1), 1, 1);
 
-figure, % PLOT REAL WORLD
+%%% PLOT REAL WORLD %%%
+figure, 
 trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
 hold on
 % PLOT SENSOR CENTERS

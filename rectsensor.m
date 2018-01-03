@@ -12,8 +12,17 @@ max_width = max_dim(2);     % max_width = 0.3;
 H = dim(1);                 % H = 10;
 W = dim(2);                 % W = 7;
 
-rows = linspace(-max_height, max_height, H);
-cols = linspace(-max_width, max_width, W);
+if (H  < 2) 
+    rows = 0;
+else
+    rows = linspace(-max_height, max_height, H);
+end
+
+if (W < 2)
+    cols = 0;
+else
+    cols = linspace(-max_width, max_width, W);
+end
 
 [X,Y] = meshgrid(cols, rows);
 
