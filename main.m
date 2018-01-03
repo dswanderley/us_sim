@@ -59,14 +59,21 @@ axis equal
 array_dists = zeros(1,size(sensors,3));
 array_lines = zeros(2,3,size(sensors,3));
 for k = 1:size(sensors,3)
+    % Get all point in each sensor, their focus and the sensor center
     sensor = sensors(:,:,k);
     fc = focus(:,:,k);
-    [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, obj);
+    center = centers(:,:,k);
+    % Calculate minimal distance from center
+    [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, center, obj);
 	array_dists(:,k) = min_dist;
-    array_lines(:,:,k) = [p_sensor; p_voxel]; 
+    line = [center; p_voxel]; 
+    array_lines(:,:,k) = line;
+    
+    
+    
+    plot3(center(1), center(2), center(3), '*');
+    plot3(line(:,1,:), line(:,2,:), line(:,3,:));
 end
-
-
 
 
 

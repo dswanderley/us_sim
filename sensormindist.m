@@ -1,4 +1,4 @@
-function [min_dist, p_sensor, p_voxel] = sensormindist(sensor, focus, obj)
+function [min_dist, p_sensor, p_voxel] = sensormindist(sensor, focus, center, obj)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,7 +7,7 @@ p_sensor = [];
 p_voxel = [];
 
 %%% RAYS DISTANCE %%%
-[idx_list, rays_distance, rays_intercept, ~] = sensorsbeams(sensor, focus, obj);
+[idx_list, rays_distance, rays_intercept, ~] = sensorsbeams(sensor, focus, center, obj);
 
 % Check if it is empty to avoid error
 if (~isempty(rays_intercept))

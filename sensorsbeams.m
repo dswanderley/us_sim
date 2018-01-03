@@ -1,4 +1,4 @@
-function [idx_list,rays_distance, rays_intercept, rays_voxel_id] = sensorsbeams(sensor, focus, obj)
+function [idx_list,rays_distance, rays_intercept, rays_voxel_id] = sensorsbeams(sensor, focus, center, obj)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -13,6 +13,11 @@ for k = 1:n_rays
     line = [p_sensor; p_focal];
     
     [ d_min, p_int,  face_int_idx ] = minvoxeldist(obj, line);
+    
+    if (~isempty(d_min))
+        d_min = pdist([center; p_int]);
+    end
+    
     rays_distance{k} = d_min;
     rays_intercept{k} = p_int;
     rays_voxel_id{k} = face_int_idx;
