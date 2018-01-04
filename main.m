@@ -146,15 +146,12 @@ for c = 1:length(idx_list)
 end
 
 % Slice for 3D vizualization 
-[xx, yy, zz] = meshgrid(1:array_size(2), 1:R_SAMPLES, 1:array_size(1));
-xslice = 1:array_size(2); 
-yslice = 1:R_SAMPLES;
-zslice = 1:array_size(1);
-figure,
-slice(xx,yy,zz, V,xslice,yslice, zslice)
-colormap winter
-axis equal%([1, array_dim(1), 0, MAX_DEPTH, 1 array_dim(2)])
-xlabel('x'); ylabel('y'); zlabel('z');
+figure, 
+for k = 1:size(V,3)
+    imagesc(V(:,:,k));
+    title(['Row ', num2str(k)]);
+    pause(0.5);
+end
 
 
 
