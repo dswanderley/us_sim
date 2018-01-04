@@ -127,13 +127,11 @@ xlabel('W'); ylabel('H');
 axis equal
 
 %%% PLANE %%% 
-MAX_DEPTH = 3; % m
 R_SAMPLES = 100;
 range_arr = linspace(0, MAX_DEPTH, R_SAMPLES);
 
 % 3D Image, where each layer is a plan
 V = zeros(R_SAMPLES, array_size(2), array_size(1));
-figure,
 for c = 1:length(idx_list)
     
     nn = idx_2d_y(c);
@@ -146,30 +144,17 @@ for c = 1:length(idx_list)
     
     V(:, mm, nn) = depth;
 end
-% 
-% % Slice for 3D vizualization 
-% [xx, yy, zz] = meshgrid(1:sensor_shape(2) ,1:R_SAMPLES, 1:sensor_shape(1));
-% xslice = 1:sensor_shape(2); 
-% yslice = 1:R_SAMPLES;
-% zslice = 1:sensor_shape(1);
-% figure,
-% slice(xx,yy,zz, V,xslice,yslice, zslice)
-% colormap winter
-% axis equal
-% xlabel('x'); ylabel('y'); zlabel('z');
-% 
-% % 3D Volume vizualization
-% xdata = [0,sensor_shape(2)]; 
-% ydata = [0,R_SAMPLES];
-% zdata = [0,sensor_shape(1)];
-% 
-% figure, 
-% vol3d('cdata', V, 'xdata', xdata, 'ydata', ydata, 'zdata', zdata);
-% colormap winter
-% %axis equal off
-% %set(gcf, 'color', 'w');
-% %xlabel('x'); ylabel('y'); zlabel('z');
 
+% Slice for 3D vizualization 
+[xx, yy, zz] = meshgrid(1:array_size(2), 1:R_SAMPLES, 1:array_size(1));
+xslice = 1:array_size(2); 
+yslice = 1:R_SAMPLES;
+zslice = 1:array_size(1);
+figure,
+slice(xx,yy,zz, V,xslice,yslice, zslice)
+colormap winter
+axis equal%([1, array_dim(1), 0, MAX_DEPTH, 1 array_dim(2)])
+xlabel('x'); ylabel('y'); zlabel('z');
 
 
 
