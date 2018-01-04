@@ -22,19 +22,26 @@ orientation = [1,0,0];  % Array beams orientation
 u = [0, 1, 0];          % Array plan vector 1
 v = [0, 0, 1];          % Array plan vector 2
 % Rectangular sensor
-sensor_size = [5, 3];   % unit (number of beams)
+sensor_size = [3, 3];   % unit (number of beams)
+% Angle - 0 for collinear
+max_angle = 0;  % 30 * pi /180;
+if (max_angle == 0)
+    sensor_size = [1, 1];   % for collinear case
+end
+% Number of Beams in each sensor
 sensor_beams = sensor_size(1) * sensor_size(2);
-array_dim = [90, 160]/10;  % cm
-array_size = [3, 5];    % unit (number of sensors in each direction)
-num_sensors = array_size(1) * array_size(2);        % Number of sensors on array
+% Dimension in physical scale of the array
+array_dim = [90, 90]/10;      % cm
+% Sensors arrangement in array
+array_size = [9, 9];            % unit (number of sensors in each direction)
+num_sensors = array_size(1) * array_size(2);    % Number of sensors on array
 % Get sensors
 [sensors, centers, srect] = sensorarray(sensor_size, array_dim, array_size, u, v, [0,0,0]);
 
 % GET FOCAL POINTS
 array_center = centers(:,:,1);
 sensor_base = sensors(:,:,1);
-% Angle - 0 for collinear
-max_angle = 0;  % 30 * pi /180;
+
 % Focus based to be applied in each sensor
 focus_base = getfocalpoints(sensor_base, array_center, u, v, orientation, max_angle);
 % Remove offset from sensor_base 
@@ -100,43 +107,45 @@ axis equal
 M_dist = MAX_DEPTH*ones(array_size);
 M_dist(idx_list) = rays_distance;
 % Show image
-im_sensor = rot90(rot90(M_dist));
+im_sensor = M_dist; % rot90(rot90(M_dist));
+% im_sensor = padarray(im_sensor,[1,1],'symmetric','both');   % post
 clims = [0 max(rays_distance)];
-figure, 
-surf(im_sensor);
-hold on
-imagesc(im_sensor, clims)
+% 2D image coloured %
+figure,
+imagesc(im_sensor)%, clims)
+set(gca,'YDir','reverse');
+axis([1 6 1 4]);
 colorbar
-xlabel('W'); ylabel('H'); zlabel('D');
+xlabel('W'); ylabel('H');
+axis equal
+% 3D Surf Image %
+[X,Y] = meshgrid(1:array_size(2), 1:array_size(1));
+figure, 
+surf(X,Y,im_sensor);
+colorbar
+xlabel('W'); ylabel('H');
+axis equal
 
+%%% PLANE %%% 
+MAX_DEPTH = 3; % m
+R_SAMPLES = 100;
+range_arr = linspace(0, MAX_DEPTH, R_SAMPLES);
 
-
-% %[idx_l, idx_c] = ind2sub(sensor_shape, idx_list);
-% im_sensor = zeros(sensor_shape);
-% im_sensor(idx_list) = abs(rays_distance/max(rays_distance)-1)+0.5;
-% im_sensor = rot90(rot90(im_sensor));
-% figure, imshow(im_sensor)
-
-% 
-% %%% PLANE %%% 
-% MAX_RANGE = 3; % m
-% R_SAMPLES = 100;
-% range_arr = linspace(0, MAX_RANGE, R_SAMPLES);
-% 
-% n_sensors = sensor_shape(2);
-% % 3D Image, where each layer is a plan
-% V = zeros(R_SAMPLES, sensor_shape(2), sensor_shape(1));
-% for c = 1:length(idx_list)
-%     
-%     idx = idx_list(c);
-%     [nn, mm] = ind2sub(sensor_shape,idx);
-%     [val, index] = min(abs(range_arr - rays_distance(c)));
-%     
-%     depth = zeros(1, R_SAMPLES); 
-%     depth(index) = 1;
-%     
-%     V(:, mm, nn) = depth;
-% end
+% 3D Image, where each layer is a plan
+V = zeros(R_SAMPLES, array_size(2), array_size(1));
+figure,
+for c = 1:length(idx_list)
+    
+    nn = idx_2d_y(c);
+    mm = idx_2d_x(c);
+    
+    [val, index] = min(abs(range_arr - rays_distance(c)));
+    
+    depth = zeros(1, R_SAMPLES); 
+    depth(index) = 1;
+    
+    V(:, mm, nn) = depth;
+end
 % 
 % % Slice for 3D vizualization 
 % [xx, yy, zz] = meshgrid(1:sensor_shape(2) ,1:R_SAMPLES, 1:sensor_shape(1));
