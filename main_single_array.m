@@ -90,7 +90,7 @@ for k = 1:size(sensors,3)
     % PLOT MIN BEAM  
     plot3(line(:,1,:), line(:,2,:), line(:,3,:));
     xlabel('Sensor array'); ylabel('Depth');
-    pause(0.01)
+    pause(0.1)
 end
 hold off
 
@@ -99,7 +99,7 @@ idx_list = find(~cellfun(@isempty,array_dists))';
 rays_distance = cell2mat(array_dists(:));
 [idx_2d_y, idx_2d_x] = ind2sub(array_size, idx_list);
 
-pause(1)
+pause(2)
 % PLOT DISTANCES
 figure('units','normalized','outerposition',[0 0 1 1])
 subplot(1,3,1)
@@ -147,7 +147,7 @@ for c = 1:length(idx_list)
     V(:, mm, nn) = depth;
 end
 
-pause(2)
+pause(20)
 % View slice of 3D volume 
 fig_rows = floor(sqrt(size(V,2)));
 fig_cols = round(size(V,2)/fig_rows);
@@ -160,18 +160,18 @@ for k = 1:size(V,3)
 end
 
 
-figure, 
-imagesc(im_sensor)
-grid
-colorbar
-xlabel('Array Width'); ylabel('Array Height');
-axis equal
-
-
-figure, 
-surf(X,Y,im_sensor);
-xlabel('Array Width'); ylabel('Array Height'); zlabel('Depth');
-axis equal
-
-
+% figure, 
+% imagesc(im_sensor)
+% grid
+% colorbar
+% xlabel('Array Width'); ylabel('Array Height');
+% axis equal
+% 
+% 
+% figure, 
+% surf(X,Y,im_sensor);
+% xlabel('Array Width'); ylabel('Array Height'); zlabel('Depth');
+% axis equal
+% 
+% 
 
