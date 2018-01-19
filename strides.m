@@ -16,13 +16,13 @@ s_lim(:,2) = o_shape(:,2) + safe_guard;
 % X axis postions
 residue_x_l = floor(mod(max_dim(1), array_dim(1))/2);
 residue_x_r = mod(max_dim(1), array_dim(1)) - residue_x_l;
-xx1 = o_shape(1,1)+residue_x_l : +array_dim(1) : o_shape(1,2)-residue_x_r;
-xx2 = o_shape(1,2)-residue_x_r : -array_dim(1) : o_shape(1,1)+residue_x_l;
+xx1 = o_shape(1,1)+residue_x_l : +array_dim(1) : o_shape(1,2)-residue_x_r-array_dim(1);
+xx2 = o_shape(1,2)-residue_x_r : -array_dim(1) : o_shape(1,1)+residue_x_l+array_dim(1);
 % Y axis postions
 residue_y_l = floor(mod(max_dim(2), array_dim(1))/2);
 residue_y_r = mod(max_dim(2), array_dim(1)) - residue_y_l;
-yy1 = o_shape(2,1)+residue_y_l : +array_dim(1) : o_shape(2,2)-residue_y_r-1;
-yy2 = o_shape(2,2)-residue_y_r-1 : -array_dim(1) : o_shape(2,1)+residue_y_l;
+yy1 = o_shape(2,1)+residue_y_l : +array_dim(1) : o_shape(2,2)-residue_y_r-array_dim(1);
+yy2 = o_shape(2,2)-residue_y_r : -array_dim(1) : o_shape(2,1)+residue_y_l+array_dim(1);
 % Y axis positions
 zz = o_shape(3,1) : array_dim(2) : o_shape(3,2);
 % Diagonal positions

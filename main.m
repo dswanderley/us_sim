@@ -36,7 +36,13 @@ array_size = [6, 6];            % unit (number of sensors in each direction)
 num_sensors = array_size(1) * array_size(2);
 
 % List of spatial informations settings
-[list_pi, list_u, list_v ] = strides(obj.v, array_dim, 10);
+safe_guard = 10;
+[list_pi, list_u, list_v ] = strides(obj.v, array_dim, safe_guard);
+
+% Max volume
+x_min = min(list_pi(:,1))-3*safe_guard;  x_max = max(list_pi(:,1))+3*safe_guard;
+y_min = min(list_pi(:,2))-3*safe_guard;  y_max = max(list_pi(:,2))+3*safe_guard;
+z_min = min(list_pi(:,3))-3*safe_guard;  z_max = max(list_pi(:,3))+3*safe_guard;
 
 %% Loop walking with sensor
 volume{size(list_pi,1)} = [];
@@ -89,7 +95,7 @@ for l = 1:size(list_pi,1)
     c_y = reshape(centers(:,2,:), 1, num_sensors)';
     c_z = reshape(centers(:,3,:), 1, num_sensors)';
     axis equal
-    axis([-15 90 -15 60 -15 80]) % axis([-5 65 -5 20 -5 60])
+    axis([x_min, x_max, y_min, y_max, z_min, z_max])
     xlabel('x'); ylabel('y'); zlabel('z');
     plot3(c_x, c_y, c_z, '*')
     % PLOT ARRAY BORDERS
@@ -112,7 +118,7 @@ for l = 1:size(list_pi,1)
         spatial_points{k} = p_voxel;
         % PLOT MIN BEAM
         plot3(line(:,1,:), line(:,2,:), line(:,3,:));
-        pause(0.0005)
+        pause(0.00001)
     end
     hold off
     
@@ -160,8 +166,9 @@ points = cell2mat(s_points(:));
 
 plot3(points(:,1), points(:,2), points(:,3), '*')
 xlabel('x'); ylabel('y'); zlabel('z');
+axis equal
 grid
 hold on
 pause(5)
 k = boundary(points);
-trisurf(k,points(:,1),points(:,2),points(:,3),'Facecolor','red','FaceAlpha',0.1)
+%trisurf(k,points(:,1),points(:,2),points(:,3),'Facecolor','red','FaceAlpha',0.1)
