@@ -50,11 +50,6 @@ list_pi =   [0, 0, 0; ...
 volume{size(list_pi,1)} = [];
 s_points{size(list_pi,1)} = [];
 figure('units','normalized','outerposition',[0 0 1 1])
-trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
-axis equal
-axis([-5 80 -5 50 -5 70]) % axis([-5 65 -5 20 -5 60])
-xlabel('x'); ylabel('y'); zlabel('z');
-% hold on
 for l = 1:size(list_pi,1)
     
     % Positions of the sensor array
@@ -88,12 +83,22 @@ for l = 1:size(list_pi,1)
     focus(:,3,:) = focus(:,3,:) + repmat(centers(:,3,:), size(focus(:,3,:),1), 1, 1);
     
     %%% PLOT REAL WORLD %%%
-    
+    h1 = subplot(2, 2, 1);
+    trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
+    title(['Step ', num2str(l)])
+    hold on
     % PLOT SENSOR CENTERS
     c_x = reshape(centers(:,1,:), 1, num_sensors)';
     c_y = reshape(centers(:,2,:), 1, num_sensors)';
     c_z = reshape(centers(:,3,:), 1, num_sensors)';
-        
+    axis equal
+    axis([-5 80 -5 50 -5 70]) % axis([-5 65 -5 20 -5 60])
+    xlabel('x'); ylabel('y'); zlabel('z');
+    plot3(c_x, c_y, c_z, '*')
+    % PLOT ARRAY BORDERS
+    srect2plot = [srect; srect(1,:)];
+    plot3(srect2plot(:,1),srect2plot(:,2),srect2plot(:,3))
+    
     %%% RAYS DISTANCE %%%
     array_dists{size(sensors,3)} = [];
     spatial_points{size(sensors,3)} = [];
@@ -109,8 +114,8 @@ for l = 1:size(list_pi,1)
         line = [c; p_voxel];
         spatial_points{k} = p_voxel;
         % PLOT MIN BEAM
-        %plot3(line(:,1,:), line(:,2,:), line(:,3,:));
-        %pause(0.1)
+        plot3(line(:,1,:), line(:,2,:), line(:,3,:));
+        pause(0.1)
     end
     hold off
     
@@ -121,7 +126,14 @@ for l = 1:size(list_pi,1)
     
     s_points{l} = cell2mat(spatial_points(:));
     
-    % PLOT DISTANCES    
+    % pause(1)
+    % PLOT DISTANCES
+    h2 = subplot(2, 2, 2);
+    stem3(idx_2d_x, idx_2d_y, rays_distance)
+    xlabel('W'); ylabel('H');
+    axis equal
+    pause(1.5)
+    
     % Depth Image
     M_dist = MAX_DEPTH*ones(array_size);
     M_dist(idx_list) = rays_distance;
@@ -131,10 +143,21 @@ for l = 1:size(list_pi,1)
     clims = [0 MAX_DEPTH];
     
     % 2D image coloured %
+    h3 = subplot(2, 2, 3);
+    imagesc(im_sensor, clims)
+    set(gca,'YDir','reverse');
+    axis([1 6 1 4]);
+    colorbar
+    xlabel('W'); ylabel('H');
+    axis equal
+    pause(1.5)
     
     % 3D Surf Image %
-    % [X,Y] = meshgrid(1:array_size(2), 1:array_size(1));
-    
+    [X,Y] = meshgrid(1:array_size(2), 1:array_size(1));
+    h4 = subplot(2, 2, 4);
+    surf(X,Y,im_sensor);
+    xlabel('W'); ylabel('H');
+    axis equal
     
     %%% PLANE %%%
     R_SAMPLES = 100;
@@ -152,22 +175,37 @@ for l = 1:size(list_pi,1)
         depth(index) = val;
         % Volume of depth
         V(:, mm, nn) = depth;
-    end 
+    end
+    
     volume{l} = V;
-   
+    
+    pause(3)
+    delete(h1); delete(h2); delete(h3); delete(h4);
+    
+%     pause(2)
+%     % View slice of 3D volume
+%     fig_rows = floor(sqrt(size(V,2)));
+%     fig_cols = round(size(V,2)/fig_rows);
+%     figure('units','normalized','outerposition',[0 0 1 1])
+%     for k = 1:size(V,3)
+%         subplot(fig_rows,fig_cols,k)
+%         imagesc(V(:,:,k));
+%         title(['Row ', num2str(k)]);
+%         pause(0.1);
+%     end
+%     
 end
 
-% pause(2)
+pause(2)
 
 %% Plot points in 3D space
 
 points = cell2mat(s_points(:));
 
-figure('units','normalized','outerposition',[0 0 1 1])
 plot3(points(:,1), points(:,2), points(:,3), '*')
 xlabel('x'); ylabel('y'); zlabel('z');
 grid
 hold on
 pause(5)
 k = boundary(points);
-%trisurf(k,points(:,1),points(:,2),points(:,3),'Facecolor','red','FaceAlpha',0.1)
+trisurf(k,points(:,1),points(:,2),points(:,3),'Facecolor','red','FaceAlpha',0.1)
