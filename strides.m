@@ -1,4 +1,4 @@
-function [ positions, list_v, list_u ] = strides(obj_v, array_dim, safe_guard)
+function [ positions, list_u, list_v ] = strides(obj_v, array_dim, safe_guard)
 %STRIDES Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -24,12 +24,12 @@ residue_y_r = mod(max_dim(2), array_dim(1)) - residue_y_l;
 yy1 = o_shape(2,1)+residue_y_l : +array_dim(1) : o_shape(2,2)-residue_y_r-1;
 yy2 = o_shape(2,2)-residue_y_r-1 : -array_dim(1) : o_shape(2,1)+residue_y_l;
 % Y axis positions
-zz = o_shape(3,1) : array_dim(2) : o_shape(3,2)-array_dim(2);
+zz = o_shape(3,1) : array_dim(2) : o_shape(3,2);
 % Diagonal positions
 diag_factor = array_dim(1)*sin(pi/4)/2;
-u1 = [0,1,0];   u2 = [-1,0,0];   u3 = [0,-1,0];   u4 = [1,0,0];
-d1 = [sqrt(2)/2, sqrt(2)/2, 0]; d2 = [-sqrt(2)/2, sqrt(2)/2, 0];
-d3 = [-sqrt(2)/2, -sqrt(2)/2, 0]; d4 = [sqrt(2)/2, -sqrt(2)/2, 0];
+u1 = [1,0,0];   u2 = [0,1,0];   u3 = [-1,0,0];   u4 = [0,-1,0];
+d1 = [sqrt(2)/2, -sqrt(2)/2, 0]; d2 = [-sqrt(2)/2, -sqrt(2)/2, 0];
+d3 = [-sqrt(2)/2, sqrt(2)/2, 0]; d4 = [sqrt(2)/2, sqrt(2)/2, 0];
 v = [0,0,1];
 % Initialize postions
 positions{numel(zz)} = zeros(numel(xx1)+numel(yy1)+numel(xx2)+numel(yy2)+4,3);
@@ -68,9 +68,9 @@ for k = 1:length(zz)
     vec_v4 = repmat(v, numel(yy2), 1);
     % Diagonals
     diagonal_1 = [s_lim(1,1), s_lim(2,1) + diag_factor, z];
-    diagonal_2 = [s_lim(1,2) - diag_factor, s_lim(2,1), z];
+    diagonal_2 = [s_lim(1,2) + diag_factor, s_lim(2,1), z];
     diagonal_3 = [s_lim(1,2), s_lim(2,2) - diag_factor, z];
-    diagonal_4 = [s_lim(1,1) + diag_factor, s_lim(2,2), z];
+    diagonal_4 = [s_lim(1,1) - diag_factor, s_lim(2,2), z];
     % Set Postions
     positions{k} =  [diagonal_1; lateral_1;...
                      diagonal_2; lateral_2;...

@@ -36,15 +36,16 @@ array_size = [6, 6];            % unit (number of sensors in each direction)
 num_sensors = array_size(1) * array_size(2);
 
 % List of spatial informations settings
-list_u =    [0, 1, 0;...
-             0, 1, 0;...
-             sqrt(2)/2, sqrt(2)/2, 0;...
-             1, 0, 0];       % Array plan vector 1
-list_v =    [0, 0, 1];       % Array plan vector 2
-list_pi =   [0, 0, 0; ...
-             0, array_dim(1), 0; ...
-             0, 2*array_dim(1), 0;...
-             array_dim(1), 2*array_dim(1), 0];% Array initial position
+[list_pi, list_u, list_v ] = strides(obj.v, array_dim, 10);
+% list_u =    [0, 1, 0;...
+%              0, 1, 0;...
+%              sqrt(2)/2, sqrt(2)/2, 0;...
+%              1, 0, 0];       % Array plan vector 1
+% list_v =    [0, 0, 1];       % Array plan vector 2
+% list_pi =   [0, 0, 0; ...
+%              0, array_dim(1), 0; ...
+%              0, 2*array_dim(1), 0;...
+%              array_dim(1), 2*array_dim(1), 0];% Array initial position
 
 %% Loop walking with sensor
 volume{size(list_pi,1)} = [];
@@ -54,7 +55,7 @@ for l = 1:size(list_pi,1)
     
     % Positions of the sensor array
     u = list_u(l,:);
-    v = list_v;%(l,:);
+    v = list_v(l,:);
     p0 = list_pi(l,:);    
     orientation = cross(u, v); % normal
     % orientation = list_ori(l,:);
@@ -83,16 +84,16 @@ for l = 1:size(list_pi,1)
     focus(:,3,:) = focus(:,3,:) + repmat(centers(:,3,:), size(focus(:,3,:),1), 1, 1);
     
     %%% PLOT REAL WORLD %%%
-    h1 = subplot(2, 2, 1);
     trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
     title(['Step ', num2str(l)])
+    view(2)
     hold on
     % PLOT SENSOR CENTERS
     c_x = reshape(centers(:,1,:), 1, num_sensors)';
     c_y = reshape(centers(:,2,:), 1, num_sensors)';
     c_z = reshape(centers(:,3,:), 1, num_sensors)';
     axis equal
-    axis([-5 80 -5 50 -5 70]) % axis([-5 65 -5 20 -5 60])
+    axis([-15 90 -15 60 -15 80]) % axis([-5 65 -5 20 -5 60])
     xlabel('x'); ylabel('y'); zlabel('z');
     plot3(c_x, c_y, c_z, '*')
     % PLOT ARRAY BORDERS
@@ -123,16 +124,7 @@ for l = 1:size(list_pi,1)
     idx_list = find(~cellfun(@isempty,array_dists))';
     rays_distance = cell2mat(array_dists(:));
     [idx_2d_y, idx_2d_x] = ind2sub(array_size, idx_list);
-    
     s_points{l} = cell2mat(spatial_points(:));
-    
-    % pause(1)
-    % PLOT DISTANCES
-    h2 = subplot(2, 2, 2);
-    stem3(idx_2d_x, idx_2d_y, rays_distance)
-    xlabel('W'); ylabel('H');
-    axis equal
-    pause(1.5)
     
     % Depth Image
     M_dist = MAX_DEPTH*ones(array_size);
@@ -141,23 +133,6 @@ for l = 1:size(list_pi,1)
     im_sensor = M_dist; % rot90(rot90(M_dist));
     % im_sensor = padarray(im_sensor,[1,1],'symmetric','both');   % post
     clims = [0 MAX_DEPTH];
-    
-    % 2D image coloured %
-    h3 = subplot(2, 2, 3);
-    imagesc(im_sensor, clims)
-    set(gca,'YDir','reverse');
-    axis([1 6 1 4]);
-    colorbar
-    xlabel('W'); ylabel('H');
-    axis equal
-    pause(1.5)
-    
-    % 3D Surf Image %
-    [X,Y] = meshgrid(1:array_size(2), 1:array_size(1));
-    h4 = subplot(2, 2, 4);
-    surf(X,Y,im_sensor);
-    xlabel('W'); ylabel('H');
-    axis equal
     
     %%% PLANE %%%
     R_SAMPLES = 100;
@@ -178,22 +153,7 @@ for l = 1:size(list_pi,1)
     end
     
     volume{l} = V;
-    
-    pause(3)
-    delete(h1); delete(h2); delete(h3); delete(h4);
-    
-%     pause(2)
-%     % View slice of 3D volume
-%     fig_rows = floor(sqrt(size(V,2)));
-%     fig_cols = round(size(V,2)/fig_rows);
-%     figure('units','normalized','outerposition',[0 0 1 1])
-%     for k = 1:size(V,3)
-%         subplot(fig_rows,fig_cols,k)
-%         imagesc(V(:,:,k));
-%         title(['Row ', num2str(k)]);
-%         pause(0.1);
-%     end
-%     
+      
 end
 
 pause(2)
