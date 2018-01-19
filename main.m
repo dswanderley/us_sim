@@ -37,20 +37,12 @@ num_sensors = array_size(1) * array_size(2);
 
 % List of spatial informations settings
 [list_pi, list_u, list_v ] = strides(obj.v, array_dim, 10);
-% list_u =    [0, 1, 0;...
-%              0, 1, 0;...
-%              sqrt(2)/2, sqrt(2)/2, 0;...
-%              1, 0, 0];       % Array plan vector 1
-% list_v =    [0, 0, 1];       % Array plan vector 2
-% list_pi =   [0, 0, 0; ...
-%              0, array_dim(1), 0; ...
-%              0, 2*array_dim(1), 0;...
-%              array_dim(1), 2*array_dim(1), 0];% Array initial position
 
 %% Loop walking with sensor
 volume{size(list_pi,1)} = [];
 s_points{size(list_pi,1)} = [];
 figure('units','normalized','outerposition',[0 0 1 1])
+aux_view = round(size(list_pi,1)/4); 
 for l = 1:size(list_pi,1)
     
     % Positions of the sensor array
@@ -86,7 +78,11 @@ for l = 1:size(list_pi,1)
     %%% PLOT REAL WORLD %%%
     trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
     title(['Step ', num2str(l)])
-    view(2)
+    % Set View position
+    if ((mod(l, aux_view) > aux_view /4)  && (mod(l, aux_view) < 3 * aux_view /4))
+        view(2);  else  view(3);
+    end
+    
     hold on
     % PLOT SENSOR CENTERS
     c_x = reshape(centers(:,1,:), 1, num_sensors)';
@@ -116,7 +112,7 @@ for l = 1:size(list_pi,1)
         spatial_points{k} = p_voxel;
         % PLOT MIN BEAM
         plot3(line(:,1,:), line(:,2,:), line(:,3,:));
-        pause(0.1)
+        pause(0.0005)
     end
     hold off
     
