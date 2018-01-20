@@ -82,6 +82,7 @@ for l = 1:size(list_pi,1)
     focus(:,3,:) = focus(:,3,:) + repmat(centers(:,3,:), size(focus(:,3,:),1), 1, 1);
     
     %%% PLOT REAL WORLD %%%
+    h1 = subplot(1, 2, 1);
     trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
     title(['Step ', num2str(l)])
     % Set View position
@@ -155,7 +156,15 @@ for l = 1:size(list_pi,1)
     end
     
     volume{l} = V;
-      
+    
+    p_aux = cell2mat(s_points(:));
+    
+    h2 = subplot(1, 2, 2);
+    plot3(p_aux(:,1),p_aux(:,2), p_aux(:,3), '.')
+    axis equal
+    axis([x_min, x_max, y_min, y_max, z_min, z_max])
+    xlabel('x'); ylabel('y'); zlabel('z');
+    title('Resulted Point Cloud')
 end
 
 pause(2)
@@ -164,11 +173,12 @@ pause(2)
 
 points = cell2mat(s_points(:));
 
-plot3(points(:,1), points(:,2), points(:,3), '*')
-xlabel('x'); ylabel('y'); zlabel('z');
-axis equal
-grid
-hold on
-pause(5)
-k = boundary(points);
-%trisurf(k,points(:,1),points(:,2),points(:,3),'Facecolor','red','FaceAlpha',0.1)
+% figure('units','normalized','outerposition',[0 0 1 1])
+% plot3(points(:,1), points(:,2), points(:,3), '*')
+% xlabel('x'); ylabel('y'); zlabel('z');
+% axis equal
+% grid
+% hold on
+% pause(5)
+% k = boundary(points);
+% % trisurf(k,points(:,1),points(:,2),points(:,3),'Facecolor','red','FaceAlpha',0.1)
