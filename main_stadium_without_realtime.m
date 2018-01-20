@@ -47,8 +47,7 @@ z_min = min(list_pi(:,3))-3*safe_guard;  z_max = max(list_pi(:,3))+3*safe_guard;
 %% Loop walking with sensor
 volume{size(list_pi,1)} = [];
 s_points{size(list_pi,1)} = [];
-figure('units','normalized','outerposition',[0 0 1 1])
-aux_view = round(size(list_pi,1)/4); 
+tic;
 for l = 1:size(list_pi,1)
     
     % Positions of the sensor array
@@ -80,29 +79,7 @@ for l = 1:size(list_pi,1)
     focus(:,1,:) = focus(:,1,:) + repmat(centers(:,1,:), size(focus(:,1,:),1), 1, 1);
     focus(:,2,:) = focus(:,2,:) + repmat(centers(:,2,:), size(focus(:,2,:),1), 1, 1);
     focus(:,3,:) = focus(:,3,:) + repmat(centers(:,3,:), size(focus(:,3,:),1), 1, 1);
-    
-    %%% PLOT REAL WORLD %%%
-    h1 = subplot(1, 2, 1);
-    trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','blue','FaceAlpha',0.1)
-    title(['Step ', num2str(l)])
-    % Set View position
-    if ((mod(l, aux_view) > aux_view /4)  && (mod(l, aux_view) < 3 * aux_view /4))
-        view(2);  else  view(3);
-    end
-    
-    hold on
-    % PLOT SENSOR CENTERS
-    c_x = reshape(centers(:,1,:), 1, num_sensors)';
-    c_y = reshape(centers(:,2,:), 1, num_sensors)';
-    c_z = reshape(centers(:,3,:), 1, num_sensors)';
-    axis equal
-    axis([x_min, x_max, y_min, y_max, z_min, z_max])
-    xlabel('x'); ylabel('y'); zlabel('z');
-    plot3(c_x, c_y, c_z, '*')
-    % PLOT ARRAY BORDERS
-    srect2plot = [srect; srect(1,:)];
-    plot3(srect2plot(:,1),srect2plot(:,2),srect2plot(:,3))
-    
+        
     %%% RAYS DISTANCE %%%
     array_dists{size(sensors,3)} = [];
     spatial_points{size(sensors,3)} = [];
@@ -117,11 +94,7 @@ for l = 1:size(list_pi,1)
         array_dists{k} = min_dist;
         line = [c; p_voxel];
         spatial_points{k} = p_voxel;
-        % PLOT MIN BEAM
-        plot3(line(:,1,:), line(:,2,:), line(:,3,:));
-        pause(0.00001)
     end
-    hold off
     
     % Get Positions with at least one interception
     idx_list = find(~cellfun(@isempty,array_dists))';
@@ -129,31 +102,33 @@ for l = 1:size(list_pi,1)
     [idx_2d_y, idx_2d_x] = ind2sub(array_size, idx_list);
     s_points{l} = cell2mat(spatial_points(:));
     
+    % Depth Image
+    M_dist = MAX_DEPTH*ones(array_size);
+    M_dist(idx_list) = rays_distance;
+    % Show image
+    im_sensor = M_dist; % rot90(rot90(M_dist));
+    % im_sensor = padarray(im_sensor,[1,1],'symmetric','both');   % post
+    clims = [0 MAX_DEPTH];
     
-    p_aux = cell2mat(s_points(:));
-    
-    h2 = subplot(1, 2, 2);
-    if ~isempty(p_aux)
-        plot3(p_aux(:,1),p_aux(:,2), p_aux(:,3), '.')
-    end
-    axis equal
-    axis([x_min, x_max, y_min, y_max, z_min, z_max])
-    xlabel('x'); ylabel('y'); zlabel('z');
-    title('Resulted Point Cloud')
+    %%% PLANE %%%
+    R_SAMPLES = 100;
+    range_arr = linspace(0, MAX_DEPTH, R_SAMPLES);
+     
 end
-
-pause(2)
+time = toc;
 
 %% Plot points in 3D space
 
 points = cell2mat(s_points(:));
 
-% figure('units','normalized','outerposition',[0 0 1 1])
-% plot3(points(:,1), points(:,2), points(:,3), '*')
-% xlabel('x'); ylabel('y'); zlabel('z');
-% axis equal
-% grid
-% hold on
+figure('units','normalized','outerposition',[0 0 1 1])
+plot3(points(:,1), points(:,2), points(:,3), '.')
+xlabel('x'); ylabel('y'); zlabel('z');
+axis equal
+grid
+hold on
 % pause(5)
 % k = boundary(points);
 % % trisurf(k,points(:,1),points(:,2),points(:,3),'Facecolor','red','FaceAlpha',0.1)
+
+save stadium.mat
