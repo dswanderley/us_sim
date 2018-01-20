@@ -129,33 +129,9 @@ for l = 1:size(list_pi,1)
     [idx_2d_y, idx_2d_x] = ind2sub(array_size, idx_list);
     s_points{l} = cell2mat(spatial_points(:));
     
-    % Depth Image
-    M_dist = MAX_DEPTH*ones(array_size);
-    M_dist(idx_list) = rays_distance;
-    % Show image
-    im_sensor = M_dist; % rot90(rot90(M_dist));
-    % im_sensor = padarray(im_sensor,[1,1],'symmetric','both');   % post
-    clims = [0 MAX_DEPTH];
-    
     %%% PLANE %%%
     R_SAMPLES = 100;
     range_arr = linspace(0, MAX_DEPTH, R_SAMPLES);
-    
-    % 3D Image, where each layer is a plan
-    V = zeros(R_SAMPLES, array_size(2), array_size(1));
-    for c = 1:length(idx_list)
-        % indexes
-        nn = idx_2d_y(c);
-        mm = idx_2d_x(c);
-        % Convert continues values to discrete space
-        [val, index] = min(abs(range_arr - rays_distance(c)));
-        depth = zeros(1, R_SAMPLES);
-        depth(index) = val;
-        % Volume of depth
-        V(:, mm, nn) = depth;
-    end
-    
-    volume{l} = V;
     
     p_aux = cell2mat(s_points(:));
     
