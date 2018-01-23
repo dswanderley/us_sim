@@ -1,4 +1,4 @@
-function [min_dist, p_sensor, p_voxel] = sensormindist(sensor, focus, center, obj)
+function [min_dist, p_sensor, p_voxel] = sensormindist(sensor, focus, center, obj, depth)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -14,19 +14,22 @@ if (~isempty(rays_intercept))
     
     %%% MIM DISTANCE %%%
     min_ray = min(rays_distance);
-    min_idx_list = find(rays_distance == min_ray);
-    min_idx = min_idx_list(round(length(min_idx_list)/2));
-    
-    % Ray tracer
-    p1 = sensor(idx_list,:);    % P sensor
-    p2 = rays_intercept;        % P voxel
-    % plot3([p1(:,1),p2(:,1)]',[p1(:,2),p2(:,2)]',[p1(:,3),p2(:,3)]');
-    
-    % Outputs
-    min_dist = rays_distance(min_idx);
-    p_sensor = p1(min_idx,:);
-    p_voxel = p2(min_idx,:);
-    
+    % Check if the depth is lower than the maximum range
+    if min_ray < depth
+        
+        min_idx_list = find(rays_distance == min_ray);
+        min_idx = min_idx_list(round(length(min_idx_list)/2));
+        
+        % Ray tracer
+        p1 = sensor(idx_list,:);    % P sensor
+        p2 = rays_intercept;        % P voxel
+        % plot3([p1(:,1),p2(:,1)]',[p1(:,2),p2(:,2)]',[p1(:,3),p2(:,3)]');
+        
+        % Outputs
+        min_dist = rays_distance(min_idx);
+        p_sensor = p1(min_idx,:);
+        p_voxel = p2(min_idx,:);
+    end    
 end
 
 end

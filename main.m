@@ -113,7 +113,7 @@ for l = 1:size(list_pi,1)
         fc = focus(:,:,k);
         c = centers(:,:,k);
         % Calculate minimal distance from center
-        [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, c, obj);
+        [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, c, obj, MAX_DEPTH);
         array_dists{k} = min_dist;
         line = [c; p_voxel];
         spatial_points{k} = p_voxel;

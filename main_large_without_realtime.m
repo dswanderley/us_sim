@@ -1,6 +1,6 @@
 close all; clear; clc;
 %% OBJ Settings %%
-obj_str = 'Estadio-do-dragao';
+obj_str = 'Igreja_Pampulha';
 
 if  exist([obj_str ,'.mat'],'file')
     obj = load([obj_str, '.mat']);
@@ -9,7 +9,8 @@ else
     save([obj_str, '.mat'],'-struct', 'obj');
 end
 
-scale = 0.01; % TO METERS
+scale = 10^-(2); % TO METERS
+scale = scale*10^-(1); % To scale
 offsets = [0, 0, 0];
 obj.v = setobjoffset(obj.v, offsets, scale);
 %%
@@ -18,7 +19,7 @@ obj.v = setobjoffset(obj.v, offsets, scale);
 %   x /
 %
 %% Sensors and Array Settings %%
-MAX_DEPTH = 300;         % m
+MAX_DEPTH = 3;         % m
 % Rectangular sensor
 sensor_size = [3, 3];   % unit (number of beams)
 % Angle in rad - 0 for collinear
@@ -90,7 +91,7 @@ for l = 1:size(list_pi,1)
         fc = focus(:,:,k);
         c = centers(:,:,k);
         % Calculate minimal distance from center
-        [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, c, obj);
+        [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, c, obj, MAX_DEPTH);
         array_dists{k} = min_dist;
         line = [c; p_voxel];
         spatial_points{k} = p_voxel;
@@ -122,7 +123,7 @@ time = toc;
 points = cell2mat(s_points(:));
 
 figure('units','normalized','outerposition',[0 0 1 1])
-plot3(points(:,1), points(:,2), points(:,3), '.')
+plot3(points(:,1), points(:,2), points(:,3), '.g')
 xlabel('x'); ylabel('y'); zlabel('z');
 axis equal
 grid

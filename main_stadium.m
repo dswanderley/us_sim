@@ -1,6 +1,6 @@
 close all; clear; clc;
 %% OBJ Settings %%
-obj_str = 'Estadio-do-dragao';
+obj_str = 'Igreja_Pampulha';
 
 if  exist([obj_str ,'.mat'],'file')
     obj = load([obj_str, '.mat']);
@@ -9,7 +9,8 @@ else
     save([obj_str, '.mat'],'-struct', 'obj');
 end
 
-scale = 0.01; % TO METERS
+scale = 10^-(2); % TO METERS
+scale = scale*10^-(1); % To scale
 offsets = [0, 0, 0];
 obj.v = setobjoffset(obj.v, offsets, scale);
 %%
@@ -18,7 +19,7 @@ obj.v = setobjoffset(obj.v, offsets, scale);
 %   x /
 %
 %% Sensors and Array Settings %%
-MAX_DEPTH = 300;         % m
+MAX_DEPTH = 3;         % m
 % Rectangular sensor
 sensor_size = [3, 3];   % unit (number of beams)
 % Angle in rad - 0 for collinear
@@ -36,7 +37,7 @@ array_size = [4, 4];            % unit (number of sensors in each direction)
 num_sensors = array_size(1) * array_size(2);
 
 % List of spatial informations settings
-safe_guard = 10;
+safe_guard = 0.5;
 [list_pi, list_u, list_v ] = strides(obj.v, array_dim, safe_guard);
 
 % Max volume
@@ -83,11 +84,11 @@ for l = 1:size(list_pi,1)
     
     %%% PLOT REAL WORLD %%%
     h1 = subplot(1, 2, 1);
-    trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','blue','FaceAlpha',0.1)
+    trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','green','FaceAlpha',0.1)
     title(['Step ', num2str(l)])
     % Set View position
     if ((mod(l, aux_view) > aux_view /4)  && (mod(l, aux_view) < 3 * aux_view /4))
-        view(2);  else  view(3);
+        view(2);    else view(3);
     end
     
     hold on
@@ -113,7 +114,7 @@ for l = 1:size(list_pi,1)
         fc = focus(:,:,k);
         c = centers(:,:,k);
         % Calculate minimal distance from center
-        [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, c, obj);
+        [min_dist, p_sensor, p_voxel] = sensormindist(sensor, fc, c, obj, MAX_DEPTH);
         array_dists{k} = min_dist;
         line = [c; p_voxel];
         spatial_points{k} = p_voxel;
