@@ -87,9 +87,10 @@ for l = 1:size(list_pi,1)
     trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','green','FaceAlpha',0.1)
     title(['Step ', num2str(l)])
     % Set View position
-    if ((mod(l, aux_view) > aux_view /4)  && (mod(l, aux_view) < 3 * aux_view /4))
-        view(2);    else view(3);
-    end
+    view(3)
+    %if ((mod(l, aux_view) > aux_view /4)  && (mod(l, aux_view) < 3 * aux_view /4))
+    %    view(2);    else ;
+    %end
     
     hold on
     % PLOT SENSOR CENTERS

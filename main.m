@@ -1,6 +1,7 @@
 close all; clear; clc;
 %% OBJ Settings %%
-obj_str = 'torus-188';
+%obj_str = 'torus-188';
+obj_str = 'wheel_with_hat';
 
 if  exist([obj_str ,'.mat'],'file')
     obj = load([obj_str, '.mat']);
@@ -9,7 +10,7 @@ else
     save([obj_str, '.mat'],'-struct', 'obj');
 end
 
-scale = 0.5;
+scale = 0.5*10^-2;
 offsets = [8, 0, 0];
 obj.v = setobjoffset(obj.v, offsets, scale);
 %%
@@ -18,11 +19,11 @@ obj.v = setobjoffset(obj.v, offsets, scale);
 %   x /
 %
 %% Sensors and Array Settings %%
-MAX_DEPTH = 30;         % cm
+MAX_DEPTH = 50;         % cm
 % Rectangular sensor
 sensor_size = [3, 3];   % unit (number of beams)
 % Angle in rad - 0 for collinear
-max_angle = 0 * pi /180;
+max_angle = 15 * pi /180;
 if (max_angle == 0)
     sensor_size = [1, 1];   % for collinear case
 end
@@ -48,13 +49,13 @@ z_min = min(list_pi(:,3))-3*safe_guard;  z_max = max(list_pi(:,3))+3*safe_guard;
 volume{size(list_pi,1)} = [];
 s_points{size(list_pi,1)} = [];
 figure('units','normalized','outerposition',[0 0 1 1])
-aux_view = round(size(list_pi,1)/4); 
+aux_view = round(size(list_pi,1)/4);
 for l = 1:size(list_pi,1)
     
     % Positions of the sensor array
     u = list_u(l,:);
     v = list_v(l,:);
-    p0 = list_pi(l,:);    
+    p0 = list_pi(l,:);
     orientation = cross(u, v); % normal
     % orientation = list_ori(l,:);
     
@@ -86,9 +87,9 @@ for l = 1:size(list_pi,1)
     trisurf(obj.f.v,obj.v(:,1),obj.v(:,2),obj.v(:,3),'Facecolor','red','FaceAlpha',0.1)
     title(['Step ', num2str(l)])
     % Set View position
-    if ((mod(l, aux_view) > aux_view /4)  && (mod(l, aux_view) < 3 * aux_view /4))
-        view(2);  else  view(3);
-    end
+    % if ((mod(l, aux_view) > aux_view /4)  && (mod(l, aux_view) < 3 * aux_view /4))
+    %     view(2);  else  view(3);
+    % end
     
     hold on
     % PLOT SENSOR CENTERS
@@ -97,7 +98,7 @@ for l = 1:size(list_pi,1)
     c_z = reshape(centers(:,3,:), 1, num_sensors)';
     axis equal
     axis([x_min, x_max, y_min, y_max, z_min, z_max])
-    xlabel('x'); ylabel('y'); zlabel('z');
+    xlabel('x (cm)'); ylabel('y (cm)'); zlabel('z (cm)');
     plot3(c_x, c_y, c_z, '*')
     % PLOT ARRAY BORDERS
     srect2plot = [srect; srect(1,:)];
@@ -136,11 +137,12 @@ for l = 1:size(list_pi,1)
     p_aux = cell2mat(s_points(:));
     
     h2 = subplot(1, 2, 2);
-    plot3(p_aux(:,1),p_aux(:,2), p_aux(:,3), '.')
+    plot3(p_aux(:,1),p_aux(:,2), p_aux(:,3), '.r')
     axis equal
     axis([x_min, x_max, y_min, y_max, z_min, z_max])
-    xlabel('x'); ylabel('y'); zlabel('z');
+    xlabel('x (cm)'); ylabel('y (cm)'); zlabel('z (cm)');
     title('Resulted Point Cloud')
+    grid on
 end
 
 pause(2)
@@ -149,12 +151,10 @@ pause(2)
 
 points = cell2mat(s_points(:));
 
-% figure('units','normalized','outerposition',[0 0 1 1])
-% plot3(points(:,1), points(:,2), points(:,3), '*')
-% xlabel('x'); ylabel('y'); zlabel('z');
-% axis equal
-% grid
-% hold on
-% pause(5)
-% k = boundary(points);
-% % trisurf(k,points(:,1),points(:,2),points(:,3),'Facecolor','red','FaceAlpha',0.1)
+figure('units','normalized','outerposition',[0 0 1 1])
+plot3(points(:,1), points(:,2), points(:,3), '.r')
+axis([x_min, x_max, y_min, y_max, z_min, z_max])
+xlabel('x (cm)'); ylabel('y (cm)'); zlabel('z (cm)');
+axis equal
+view([-45,15])
+grid

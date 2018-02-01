@@ -1,10 +1,10 @@
 close all; clear; clc;
 %% OBJ Settings %%
 %obj_str = 'Estadio-do-dragao';
-obj_str = 'Igreja_Pampulha';
+%obj_str = 'Igreja_Pampulha';
 %obj_str = 'Apoteose';
 %obj_str = 'torus-188';
-
+obj_str = 'wheel_with_hat';
 
 if  exist([obj_str ,'.mat'],'file')
     obj = load([obj_str, '.mat']);
